@@ -33,8 +33,8 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_robotContainer.init();
 
-    CameraServer.getInstance().startAutomaticCapture("Inside View", 0);
-    CameraServer.getInstance().startAutomaticCapture("Shooter View", 1);
+    //CameraServer.getInstance().startAutomaticCapture("Inside View", 0);
+    //CameraServer.getInstance().startAutomaticCapture("Shooter View", 1);
   }
 
   /**
