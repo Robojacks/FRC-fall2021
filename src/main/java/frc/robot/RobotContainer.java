@@ -143,7 +143,6 @@ public class RobotContainer {
 
     rDrive.setDefaultCommand(manualDrive);
     lift.setDefaultCommand(moveArm);
-    //spinner.setDefaultCommand(moveSpinner);
   }
 
   /**
