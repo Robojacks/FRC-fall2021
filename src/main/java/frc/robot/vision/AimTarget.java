@@ -52,7 +52,7 @@ public class AimTarget extends CommandBase {
       // Angle Correction
       MathUtil.clamp(
         // Calculate what to do based off measurement
-        angleCorrector.calculate(-vision.getXError()),
+        angleCorrector.calculate(vision.getXError()),
         // Min, Max output
         -0.5, 0.5),
       // No squared inputs
@@ -64,6 +64,7 @@ public class AimTarget extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     angleCorrector.reset();
+    vision.lightOff();
   }
 
 }
