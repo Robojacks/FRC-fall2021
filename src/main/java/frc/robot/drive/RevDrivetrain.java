@@ -81,6 +81,19 @@ public class RevDrivetrain extends SubsystemBase {
   public void limiterDrive(double leftPercent, double rightPercent) {
     roboDrive.tankDrive(leftLimiter.calculate(leftPercent), rightLimiter.calculate(rightPercent), false);
   }
+
+  public double deadband(double JoystickValue, double DeadbandCutOff) {
+    double deadbandreturn;
+
+    if (Math.abs(JoystickValue) < DeadbandCutOff) {
+      deadbandreturn = 0;
+    }
+    else {
+      deadbandreturn = JoystickValue;
+    }
+    
+    return deadbandreturn;
+  }
   
   public void setOutputVolts(double leftVolts, double rightVolts) {
     LFrontWheel.setVoltage(leftVolts);
