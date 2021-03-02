@@ -81,8 +81,8 @@ public class RobotContainer {
   // Drive with Controller 
   private Command manualDrive = new RunCommand(
     () -> rDrive.getDifferentialDrive().tankDrive(
-      drivePercentLimit * xbox.getRawAxis(kLeftY.value), 
-      drivePercentLimit * xbox.getRawAxis(kRightY.value),
+      rDrive.deadband(drivePercentLimit * xbox.getRawAxis(kLeftY.value), percentDeadband), 
+      rDrive.deadband(drivePercentLimit * xbox.getRawAxis(kRightY.value), percentDeadband),
       false
       ),
     rDrive
@@ -196,6 +196,7 @@ public class RobotContainer {
     update.periodic();
   }
 
+  /*
   private Trajectory getMovingTrajectory() {
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
       Arrays.asList(Update.getStartingPose(), new Pose2d(1.0, 0, new Rotation2d()),
@@ -205,6 +206,7 @@ public class RobotContainer {
     
     return trajectory;
   }
+  */
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

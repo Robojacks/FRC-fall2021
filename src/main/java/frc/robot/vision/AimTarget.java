@@ -65,6 +65,7 @@ public class AimTarget extends CommandBase {
   public void end(boolean interrupted) {
     angleCorrector.reset();
     vision.lightOff();
+    vision.driverMode();
   }
 
 }

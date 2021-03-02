@@ -48,9 +48,6 @@ public final class Constants {
 	// Shooter motor port
 	public static final int kShooterPort = 5;
 
-	//public static final int kLeftShooterWheelPort = 6;
-	//public static final int kRightShooterWheelPort = 5;
-
 	// Conveyor belt motor port
 	public static final int kConveyorPort = 8;
 
@@ -74,23 +71,14 @@ public final class Constants {
 
 	public static final double shooterAngle = 57;
 	 
-	public static final double straightDriveDeadband = 0.05;
+	public static final double percentDeadband = 0.05;
 
 	public static final double highGoalHeight = Units.inchesToMeters(96);
 	
 	public static final double shooterHeight = Units.inchesToMeters(18);
 
-	// Color Value Bounds
-	public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
-
-	public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
-
-	public final static Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
-  
-	public final static Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
-
 	// Constant Speeds
-	public static final double drivePercentLimit = 1;
+	public static final double drivePercentLimit = 1.0;
 
 	public static final double armPercentSpeed = 0.4;
 
@@ -121,6 +109,9 @@ public final class Constants {
 	public static final double shooterDistanceFromTargetMeters = 5;
 
 	public static final double shooterRampUpTime = 2;
+
 	public static final double pluckerHoldTime = shooterRampUpTime;
+
+	
 
 }
