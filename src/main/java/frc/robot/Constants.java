@@ -77,7 +77,13 @@ public final class Constants {
 	
 	public static final double shooterHeight = Units.inchesToMeters(18);
 
+	public static final double highGoalToShooterHeight = Units.inchesToMeters(80.25);
+
+	public static final double cameraToCenterOfBall = Units.inchesToMeters(20.50);
+
 	// Constant Speeds
+	public static final double gravity = 9.806;
+
 	public static final double drivePercentLimit = 1.0;
 
 	public static final double armPercentSpeed = 0.4;
@@ -108,10 +114,8 @@ public final class Constants {
 
 	public static final double shooterDistanceFromTargetMeters = 5;
 
-	public static final double shooterRampUpTime = 2;
+	public static final double shooterRampUpTime = 6;
 
 	public static final double pluckerHoldTime = shooterRampUpTime;
-
-	
 
 }

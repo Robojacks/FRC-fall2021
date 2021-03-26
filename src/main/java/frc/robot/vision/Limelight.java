@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /**
  * Configures limelight settings
@@ -187,7 +188,7 @@ public class Limelight extends SubsystemBase {
     */
     public double getTargetDistanceMeasured(double cameraToTargetHeight, double cameraAngle) {
         double distance = cameraToTargetHeight / Math.tan(Math.toRadians(cameraAngle + ty.getDouble(0.0)));
-        return distance;
+        return distance + Constants.cameraToCenterOfBall;
     }
 
     /** 
