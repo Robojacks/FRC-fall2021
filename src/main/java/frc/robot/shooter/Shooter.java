@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.vision.Limelight;
 
-import static frc.robot.Gains.shooterPID.*;
+import static frc.robot.Gains.shooterPID;
 
 import static frc.robot.Constants.*;
 
@@ -40,10 +40,10 @@ public class Shooter extends SubsystemBase {
     goalMover = changePosition;
     vision = limelight;
     // Spark PID Stuff
-    launcherController.setP(kP);
-    launcherController.setI(kI);
-    launcherController.setD(kD); 
-    launcherController.setFF(kF);
+    launcherController.setP(shooterPID.kP);
+    launcherController.setI(shooterPID.kI);
+    launcherController.setD(shooterPID.kD); 
+    launcherController.setFF(shooterPID.kF);
 
     //launcherEncoder.setVelocityConversionFactor(factor)
   }
@@ -68,7 +68,7 @@ public class Shooter extends SubsystemBase {
 
   /**
    * Sets a voltage based on whether the robot is in shooting position or
-   * intake position. 
+   * intake position.
    */
   public void setSpeedVolts() {
     if (goalMover.isCollectingPose()) {
@@ -120,23 +120,73 @@ public class Shooter extends SubsystemBase {
   }
 
   /**
-   * Using a ballistics equation and input distance, converts the output of meters per second
-   * to RPM which can be output by the shooter
+   * The Quadratic Formula, using a plus after B
+   * @param A squared variable value 
+   * @param B multiplied by variable
+   * @param C constant
+   * @return "x =" value (velocity in m/s for the calculateRPM2() method)
+   */
+  private double QuadraticFormulaPlus(double A, double B, double C) {
+    double top = -B + Math.sqrt(Math.pow(B, 2)-(4*A*C));
+    double bottom = 2*A;
+
+    return top/bottom;
+  }
+
+  /**
+   * The Quadratic Formula, using a minus after B
+   * @param A squared variable value 
+   * @param B multiplied by variable
+   * @param C constant
+   * @return "x =" value (velocity in m/s for the calculateRPM2() method)
+   */
+  private double QuadraticFormulaMinus(double A, double B, double C) {
+    double top = -B - Math.sqrt(Math.pow(B, 2)-(4*A*C));
+    double bottom = 2*A;
+    
+    return top/bottom;
+  }
+
+  /**
+   * Using a physics model and input distance, converts the output of meters per second
+   * to RPM, which can then be output by the shooter
    * @param distance distance from the target
    * @return Rotations Per Minute (RPM) required to shoot a ball into the goal
    */
-  private double calculateRPM(double distanceFeet) {
-    // Get the velocity needed to shoot the ball
-    double distance = Units.feetToMeters(distanceFeet);
-    double top = Math.sqrt(-4.9 * Math.pow(distance, 2)); 
-    double bottom = Math.sqrt(Math.pow(Math.cos(Math.toRadians(shooterAngle)), 2) *
-     (highGoalHeight - shooterHeight - Math.tan(shooterAngle) * distance));
+  public double calculateRPM(double distance) {
+    double A = -Math.sin(Math.toRadians(shooterAngle))/distance;
+    double B = (cameraToBallTargetHeight*Math.cos(Math.toRadians(shooterAngle)))
+              /(Math.pow(distance, 2));
+    double C = gravity;
 
-    double metersPerSecond = top/bottom;
+    // puts found values into quadratic formula, finds exit velocity in m/s
+    double velocityPlus = QuadraticFormulaPlus(A, B, C);
+    double velocityMinus = QuadraticFormulaMinus(A, B, C);
 
-    double radiansPerSecond = metersPerSecond / kShooterWheelRadiusMeters;
+    // converts m/s velocity to rads/sec to RPM
+    double RPMPlus = Units.radiansPerSecondToRotationsPerMinute(velocityPlus / kShooterWheelRadiusMeters);
+    double RPMMinus = Units.radiansPerSecondToRotationsPerMinute(velocityMinus / kShooterWheelRadiusMeters);
 
-    return Units.radiansPerSecondToRotationsPerMinute(radiansPerSecond);
+    
+    if (RPMPlus < RPMMinus && RPMPlus > 0) { // If the RPM + is less than - and positive, use it for a lower arc
+      return RPMPlus;
+
+    } else if (RPMMinus < RPMPlus && RPMMinus > 0) { // If the RPM - is less than + and positive, use it for a lower arc
+      return RPMMinus;
+
+    } else if (RPMPlus == RPMMinus && RPMMinus > 0) { // If they are the same value (and positive), return that value
+      return RPMMinus;
+
+    } else if (RPMMinus > 0) { // Return RPMMinus if positive, this is here in case RPMPlus is negative
+      return RPMMinus;
+
+    } else if (RPMPlus > 0) { // Return RPMPlus if positive, this is here in case RPMMinus is negative
+      return RPMPlus;
+
+    } else {
+      return 0; // something went wrong, let us not break things. It could be that RPMMinus and RPMPlus are both negative
+    }
+
   }
 
   /**
