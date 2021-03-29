@@ -19,6 +19,8 @@ import frc.robot.vision.Limelight;
 
 import static frc.robot.Gains.shooterPID;
 
+import java.util.function.BooleanSupplier;
+
 import static frc.robot.Constants.*;
 
 public class Shooter extends SubsystemBase {
@@ -232,6 +234,10 @@ public class Shooter extends SubsystemBase {
    */
   public double getVelocity() {
     return launcherEncoder.getVelocity();
+  }
+
+  public boolean atSpeed(double range) {
+    return shooterRPM - range < getVelocity();
   }
 
   @Override

@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.Arrays;
 
@@ -101,6 +102,12 @@ public class RobotContainer {
     new WaitCommand(shooterRampUpTime).withInterrupt(goalMover::isCollectingPose),
     new InstantCommand(() -> plucker.setSpeed(), plucker), 
     new InstantCommand(() -> conveyor.setSpeed(), conveyor));
+
+  private SequentialCommandGroup waitUntilVelocity = new SequentialCommandGroup(
+    new WaitUntilCommand(() -> shooter.atSpeed(100)),
+    new InstantCommand(() -> plucker.setSpeed(), plucker), 
+    new InstantCommand(() -> conveyor.setSpeed(), conveyor)
+  );
 
   private SequentialCommandGroup stopFeeders = new SequentialCommandGroup(
     new InstantCommand(() -> plucker.stop(), plucker),
@@ -170,7 +177,7 @@ public class RobotContainer {
     // Toggles high shooting
     new JoystickButton(xbox, kY.value)
     .whenPressed(new InstantCommand(() -> shooter.toggleSpeedSpark()))
-    .whenPressed(new ConditionalCommand(waitAndFeed, stopFeeders, shooter::isEngaged));
+    .whenPressed(new ConditionalCommand(waitUntilVelocity, stopFeeders, shooter::isEngaged));
 
     // Vision correction
     new JoystickButton(xbox, kX.value)
