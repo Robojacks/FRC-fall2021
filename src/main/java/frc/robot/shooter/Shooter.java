@@ -236,8 +236,8 @@ public class Shooter extends SubsystemBase {
     return launcherEncoder.getVelocity();
   }
 
-  public boolean atSpeed(double range) {
-    return shooterRPM - range < getVelocity();
+  public boolean atSpeed() {
+    return shooterRPM <= getVelocity();
   }
 
   @Override
