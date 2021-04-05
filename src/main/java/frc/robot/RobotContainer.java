@@ -19,6 +19,7 @@ import static edu.wpi.first.wpilibj.XboxController.Button.*;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -186,6 +188,10 @@ public class RobotContainer {
     // Switch Gears
     new JoystickButton(xbox, kBumperRight.value)
     .whenPressed(() -> gears.switchGears(), gears);
+
+    new JoystickButton(xbox, kStart.value)
+    .whenPressed(new InstantCommand(() -> shooter.zoneSwitch(), shooter))
+    .whenPressed(new PrintCommand("Pressed"));
     
   }
 
@@ -200,6 +206,10 @@ public class RobotContainer {
   } 
 
   public void periodic() {
+
+    SmartDashboard.putString("Shooter Postion:", shooter.selector.positionName);
+    SmartDashboard.putNumber("Set RPM", shooter.shooterRPM);
+
     update.periodic();
   }
 
