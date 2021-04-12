@@ -13,6 +13,7 @@ import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import static edu.wpi.first.wpilibj.XboxController.Axis.*;
 import static edu.wpi.first.wpilibj.XboxController.Button.*;
@@ -22,12 +23,13 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.shooter.ChangePosition;
 import frc.robot.shooter.Conveyor;
-import frc.robot.shooter.Plucker;
 import frc.robot.vision.AimTarget;
 import frc.robot.vision.Limelight;
 import frc.robot.climber.Lift;
+import frc.robot.drive.Controller;
 import frc.robot.drive.Gears;
 import frc.robot.drive.RevDrivetrain;
 import frc.robot.shooter.Shooter;
@@ -35,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -70,12 +73,12 @@ public class RobotContainer {
 
   private final Conveyor conveyor = new Conveyor(goalMover);
 
-  private final Plucker plucker = new Plucker(goalMover);
-
   private final Gears gears = new Gears();
 
+  private final Controller controller = new Controller(xbox);
+
   // Update PID values
-  private final Update update = new Update(shooter, plucker);
+  private final Update update = new Update(shooter, limelight);
 
   //  --- Default Commands ---
 
@@ -97,21 +100,15 @@ public class RobotContainer {
 
   // --- Command Groups ---
 
-  private SequentialCommandGroup waitAndFeed = new SequentialCommandGroup(
-    // When in collecting pose, the time delay is not needed, so it is interrupted 
-    new WaitCommand(shooterRampUpTime).withInterrupt(goalMover::isCollectingPose),
-    new InstantCommand(() -> plucker.setSpeed(), plucker), 
-    new InstantCommand(() -> conveyor.setSpeed(), conveyor));
-
   private SequentialCommandGroup waitUntilVelocity = new SequentialCommandGroup(
     new WaitUntilCommand(() -> shooter.atSpeed()),
-    new InstantCommand(() -> plucker.setSpeed(), plucker), 
     new InstantCommand(() -> conveyor.setSpeed(), conveyor)
   );
 
   private SequentialCommandGroup stopFeeders = new SequentialCommandGroup(
-    new InstantCommand(() -> plucker.stop(), plucker),
-    new InstantCommand(() -> conveyor.stop(), conveyor));
+    new InstantCommand(() -> conveyor.stop(), conveyor),
+    new InstantCommand(() -> limelight.lightOff())
+  );
 
   // Autonomous 
   private SequentialCommandGroup shootThenGo = new SequentialCommandGroup(
@@ -119,11 +116,9 @@ public class RobotContainer {
     new WaitCommand(.75),
     new InstantCommand(() -> goalMover.shootPose(), goalMover),
     new InstantCommand(() -> shooter.setSpeedSpark(), shooter),
-    new WaitCommand(shooterRampUpTime).withInterrupt(goalMover::isCollectingPose),
-    new InstantCommand(() -> plucker.setSpeed(), plucker), 
+    new WaitUntilCommand(() -> shooter.atSpeed()),
     new InstantCommand(() -> conveyor.setSpeed(), conveyor),
-    new WaitCommand(2 + shooterRampUpTime),
-    new InstantCommand(() -> plucker.stop(), plucker),
+    new WaitCommand(3),
     new InstantCommand(() -> conveyor.stop(), conveyor),
     new InstantCommand(() -> shooter.stop(), shooter),
     new RunCommand(() -> rDrive.getDifferentialDrive().tankDrive(0.4, 0.4), rDrive).withTimeout(2)
@@ -167,15 +162,12 @@ public class RobotContainer {
     // Shoot or intake with voltage, aiming for low goal
     new JoystickButton(xbox, kBumperLeft.value)
     .whenPressed(new InstantCommand(() -> shooter.toggleSpeedVolts(), shooter))
-    .whenPressed(new InstantCommand(() -> conveyor.toggleSpeed(), shooter))
-    .whenPressed(new InstantCommand(() -> plucker.toggleSpeed(), plucker));
-    
-    // Shoot or intake with set velocity, specifically for high goal
-    new JoystickButton(xbox, kB.value)
-    .whenPressed(new InstantCommand(() -> plucker.toggleSpeed(), plucker));
+    .whenPressed(new InstantCommand(() -> conveyor.toggleSpeed(), shooter));
     
     // Toggles high shooting
     new JoystickButton(xbox, kY.value)
+    .whenPressed(new InstantCommand(() -> limelight.visionMode()))
+    .whenPressed(new InstantCommand(() -> limelight.lightOn()))
     .whenPressed(new InstantCommand(() -> shooter.toggleSpeedSpark()))
     .whenPressed(new ConditionalCommand(waitUntilVelocity, stopFeeders, shooter::isEngaged));
 
@@ -195,12 +187,18 @@ public class RobotContainer {
     limelight.PiPSecondaryStream();
 
     shooter.stop();
-    plucker.stop();
     conveyor.stop();
   } 
 
   public void periodic() {
     update.periodic();
+    if (Timer.getMatchTime() < 30.0) {
+      new SequentialCommandGroup(
+        new InstantCommand(() -> controller.commenceRumble()),
+        new WaitCommand(2),
+        new InstantCommand(() -> controller.stopRumble())
+      );
+    }
   }
 
   /*
