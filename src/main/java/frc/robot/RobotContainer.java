@@ -13,6 +13,7 @@ import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import static edu.wpi.first.wpilibj.XboxController.Axis.*;
 import static edu.wpi.first.wpilibj.XboxController.Button.*;
@@ -29,6 +30,7 @@ import frc.robot.shooter.Conveyor;
 import frc.robot.vision.AimTarget;
 import frc.robot.vision.Limelight;
 import frc.robot.climber.Lift;
+import frc.robot.drive.Controller;
 import frc.robot.drive.Gears;
 import frc.robot.drive.RevDrivetrain;
 import frc.robot.shooter.Shooter;
@@ -58,8 +60,12 @@ public class RobotContainer {
   // Drive Controller
   private XboxController xbox = new XboxController(kXboxPort);
 
+  private final Controller controller = new Controller(xbox);
+
   // Drive Subsystem
   private final RevDrivetrain rDrive = new RevDrivetrain();
+ 
+  private final ChangePosition changePosition = new ChangePosition();
 
   // Limelight Subsystem
   private final Limelight limelight = new Limelight();
@@ -77,7 +83,7 @@ public class RobotContainer {
   private final Gears gears = new Gears();
 
   // Update PID values
-  private final Update update = new Update(shooter/*, plucker*/);
+  private final Update update = new Update(shooter/*, plucker*/, changePosition);
 
   //  --- Default Commands ---
 
@@ -195,6 +201,7 @@ public class RobotContainer {
     
   }
 
+
   public void init(){
     limelight.driverMode();
     limelight.lightOff();
@@ -205,10 +212,51 @@ public class RobotContainer {
     conveyor.stop();
   } 
 
+  public void teleopPeriodic() {
+    if (Timer.getMatchTime() > 28 && Timer.getMatchTime() < 30.0 ) {
+      new SequentialCommandGroup(
+      new InstantCommand(() -> controller.startRumble()),
+      new WaitCommand(2),
+      new InstantCommand(() -> controller.stopRumble())
+      );
+    }
+  }
+
+  /*public void trueOrFalse() {
+  if (changePosition.collecting = true) {
+    return stringFalse;
+  
+  } else {
+    
+    return stringTrue;
+
+  }}*/
+
   public void periodic() {
 
-    SmartDashboard.putString("Shooter Postion:", shooter.selector.positionName);
+    SmartDashboard.putString("Shooter Position:", shooter.selector.positionName);
     SmartDashboard.putNumber("Set RPM", shooter.shooterRPM);
+
+    //SmartDashboard.putString("Shooter is Engaged", "true" );
+
+    /*public void trueOrFalse() {
+    if (changePosition.collecting = true) {
+      return stringFalse;
+    
+    } else {
+      
+      return stringTrue;
+  
+    }}*/
+
+  /*  
+    if (changePosition.collecting = true) {
+    SmartDashboard.putString("Shooter is Engaged", "True");
+  } else {
+    SmartDashboard.putString("Shooter is Engaged", "False");
+  }*/
+
+
 
     update.periodic();
   }

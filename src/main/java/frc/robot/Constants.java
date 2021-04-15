@@ -108,6 +108,10 @@ public final class Constants {
 	public static final double colorSwitchSpeed = 0.2;
 	public static final double colorSpeed = 0.1;
 
+	public static final String shootingPosition = "Shooting Position";
+	public static final String intakePosition = "Intake Position";
+
+
 	// Field Measurements
 	public static final double cameraHeight = Units.inchesToMeters(30);
 

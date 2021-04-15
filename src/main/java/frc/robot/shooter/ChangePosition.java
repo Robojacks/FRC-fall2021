@@ -20,7 +20,7 @@ public class ChangePosition extends SubsystemBase {
   private Solenoid leftPiston = new Solenoid(compressorModule, leftPoseMoverPort);
   private Solenoid rightPiston = new Solenoid(compressorModule, rightPoseMoverPort);
 
-  private boolean collecting = false;
+  public boolean collecting = false;
   public boolean isSwapping = false;
   
   public ChangePosition() {
@@ -59,8 +59,21 @@ public class ChangePosition extends SubsystemBase {
     System.out.println("Shooting Pose Set");
   }
 
+  public final String stringShooterPosition() {
+    if (collecting = true) {
+      return intakePosition;
+    
+    } else {
+      
+      return shootingPosition;
+  
+  }
+}
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+
 }
