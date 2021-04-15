@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.shooter.ChangePosition;
 //import frc.robot.shooter.Plucker;
 import frc.robot.shooter.Shooter;
 
@@ -23,6 +24,7 @@ import static frc.robot.Gains.*;
  */
 public class Update {
   private Shooter m_shooter;
+  private ChangePosition m_changePosition;
  // private Plucker m_plucker;
 
   // Starting positions
@@ -32,8 +34,9 @@ public class Update {
 
   private static final SendableChooser choosePosition = new SendableChooser<Pose2d>();
 
-  public Update(Shooter shooter/*, Plucker plucker*/) {
+  public Update(Shooter shooter/*, Plucker plucker*/, ChangePosition changePosition) {
     m_shooter = shooter;
+    m_changePosition = changePosition;
     //m_plucker = plucker;
 
     choosePosition.setDefaultOption("Center", center);
@@ -48,6 +51,7 @@ public class Update {
 
     // Display left and right shooter velocities
     SmartDashboard.putNumber("Shooter RPM", m_shooter.getVelocity());
+    SmartDashboard.putString("Position", m_changePosition.stringShooterPosition());
 
     // Displays whether plucker is engaged
     //SmartDashboard.putBoolean("Plucker Engaged", m_plucker.getEngaged());
