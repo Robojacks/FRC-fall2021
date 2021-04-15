@@ -78,7 +78,7 @@ public class RobotContainer {
   private final Controller controller = new Controller(xbox);
 
   // Update PID values
-  private final Update update = new Update(shooter, limelight);
+  private final Update update = new Update(shooter, limelight, goalMover);
 
   //  --- Default Commands ---
 
@@ -166,8 +166,8 @@ public class RobotContainer {
     
     // Toggles high shooting
     new JoystickButton(xbox, kY.value)
-    .whenPressed(new InstantCommand(() -> limelight.visionMode()))
-    .whenPressed(new InstantCommand(() -> limelight.lightOn()))
+    //.whenPressed(new InstantCommand(() -> limelight.visionMode()))
+    //.whenPressed(new InstantCommand(() -> limelight.lightOn()))
     .whenPressed(new InstantCommand(() -> shooter.toggleSpeedSpark()))
     .whenPressed(new ConditionalCommand(waitUntilVelocity, stopFeeders, shooter::isEngaged));
 
@@ -190,8 +190,7 @@ public class RobotContainer {
     conveyor.stop();
   } 
 
-  public void periodic() {
-    update.periodic();
+  public void teleopPeriodic() {
     if (Timer.getMatchTime() < 30.0) {
       new SequentialCommandGroup(
         new InstantCommand(() -> controller.commenceRumble()),
@@ -199,6 +198,10 @@ public class RobotContainer {
         new InstantCommand(() -> controller.stopRumble())
       );
     }
+  }
+
+  public void robotPeriodic() {
+    update.periodic();
   }
 
   /*

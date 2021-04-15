@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.shooter.ChangePosition;
 import frc.robot.shooter.Shooter;
 import frc.robot.vision.Limelight;
 
@@ -24,6 +25,7 @@ import static frc.robot.Gains.*;
 public class Update {
   private Shooter m_shooter;
   private Limelight limelight;
+  private ChangePosition goalMover;
 
   // Starting positions
   private final Pose2d left = new Pose2d(-1, 0, Rotation2d.fromDegrees(0));
@@ -32,9 +34,10 @@ public class Update {
 
   private static final SendableChooser choosePosition = new SendableChooser<Pose2d>();
 
-  public Update(Shooter shooter, Limelight vision) {
+  public Update(Shooter shooter, Limelight vision, ChangePosition shooterPose) {
     m_shooter = shooter;
     limelight = vision;
+    goalMover = shooterPose;
 
     choosePosition.setDefaultOption("Center", center);
     choosePosition.addOption("Left", left);
@@ -61,6 +64,9 @@ public class Update {
     SmartDashboard.putNumber("Shooter RPM", m_shooter.getVelocity());
     SmartDashboard.putNumber("Distance", limelight.getTargetDistanceMeasured(centerOfBallTargetHeight, cameraAngle));
     
+    // Robot Positioning
+    SmartDashboard.putBoolean("Is in Shooting Pose", !goalMover.isCollectingPose());
+
     // Change PID values for angle correction
     if (angleCorrection.kP != SmartDashboard.getNumber("P value(angle)", angleCorrection.kP))  {
       angleCorrection.kP = SmartDashboard.getNumber("P value(angle)", angleCorrection.kP);
