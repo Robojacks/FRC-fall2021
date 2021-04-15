@@ -37,6 +37,8 @@ public class Shooter extends SubsystemBase {
   // Create toggle for shooting
   private boolean engaged = false;
 
+  public double shooterRPM = midShooterRPM;
+
   public Shooter(ChangePosition changePosition, Limelight limelight) {
     // Makes changePosition instance the same as in RobotContainer
     goalMover = changePosition;
@@ -239,6 +241,54 @@ public class Shooter extends SubsystemBase {
   public boolean atSpeed() {
     return shooterRPM <= getVelocity();
   }
+
+  //manual RPM switch
+  public zoneSelector selector = zoneSelector.mid;
+
+  public enum zoneSelector {
+    near("Near"), 
+    mid("Mid"), 
+    far("Far");
+
+    public final String positionName;
+
+    zoneSelector (final String positionName) {
+      this.positionName = positionName;
+    }
+}
+/**
+ * switches through the zones and switches RPM of shooter
+ * @return new zone
+ */
+  public void zoneSwitch() {
+    switch(selector) {
+      case far:
+        selector = zoneSelector.mid;
+        shooterRPM = midShooterRPM;
+        //SmartDashboard.putString("Shooting Postion:", zoneSelector.mid.positionName);
+        break;
+
+      case mid:
+        selector = zoneSelector.near;
+        shooterRPM = nearShooterRPM;
+        //SmartDashboard.putString("Shooting Postion:", zoneSelector.near.positionName);
+        break;
+
+      case near:
+        selector = zoneSelector.far;
+        shooterRPM = farShooterRPM;
+        //SmartDashboard.putString("Shooting Postion:", zoneSelector.far.positionName);
+        break;
+        
+      default: 
+        selector = zoneSelector.mid;
+        shooterRPM = midShooterRPM;
+        //SmartDashboard.putString("Shooting Postion:", zoneSelector.far.positionName);
+
+    }
+
+  } 
+
 
   @Override
   public void periodic() {
