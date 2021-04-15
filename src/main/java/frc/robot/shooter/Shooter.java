@@ -121,6 +121,20 @@ public class Shooter extends SubsystemBase {
     }
   }
 
+  private double calculateRPM2(double distanceMeters) {
+    // Get the velocity needed to shoot the ball
+    double distance = Units.metersToFeet(distanceMeters);
+    double top = Math.sqrt(4.9 * Math.pow(distance, 2)); 
+    double bottom = Math.sqrt(Math.pow(Math.cos(Math.toRadians(shooterAngle)), 2) *
+     (highGoalToShooterHeight - Math.tan(shooterAngle) * distance));
+
+    double metersPerSecond = Units.feetToMeters(top/bottom);
+
+    double radiansPerSecond = metersPerSecond / kShooterWheelRadiusMeters;
+
+    return Units.radiansPerSecondToRotationsPerMinute(radiansPerSecond);
+  }
+
   /**
    * The Quadratic Formula, using a plus after B
    * @param A squared variable value 
@@ -157,7 +171,7 @@ public class Shooter extends SubsystemBase {
    */
   public double calculateRPM(double distance) {
     double A = -Math.sin(Math.toRadians(shooterAngle))/distance;
-    double B = (cameraToBallTargetHeight*Math.cos(Math.toRadians(shooterAngle)))
+    double B = ((centerOfBallTargetHeight- centerofBallShooterHeight)*Math.cos(Math.toRadians(shooterAngle)))
               /(Math.pow(distance, 2));
     double C = gravity;
 
@@ -168,7 +182,6 @@ public class Shooter extends SubsystemBase {
     // converts m/s velocity to rads/sec to RPM
     double RPMPlus = Units.radiansPerSecondToRotationsPerMinute(velocityPlus / kShooterWheelRadiusMeters);
     double RPMMinus = Units.radiansPerSecondToRotationsPerMinute(velocityMinus / kShooterWheelRadiusMeters);
-
     
     if (RPMPlus < RPMMinus && RPMPlus > 0) { // If the RPM + is less than - and positive, use it for a lower arc
       return RPMPlus;
@@ -242,11 +255,6 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    /*
-    if (goalMover.isSwapping) {
-      stop();
-      goalMover.isSwapping = false;
-    }
-    */
+    //System.out.println("" + calculateRPM(3.8));
   }
 }

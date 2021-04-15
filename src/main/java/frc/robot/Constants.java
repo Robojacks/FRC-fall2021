@@ -69,7 +69,7 @@ public final class Constants {
 	public static final double targetToCameraHeight = 5;
 	public static final double cameraAngle = 0;
 
-	public static final double shooterAngle = 57;
+	public static final double shooterAngle = 57.5;
 	 
 	public static final double percentDeadband = 0.05;
 
@@ -105,17 +105,18 @@ public final class Constants {
 	public static final double colorSpeed = 0.1;
 
 	// Field Measurements
-	public static final double cameraHeight = Units.inchesToMeters(30);
+	public static final double cameraHeight = Units.inchesToMeters(30); //inaccurate
 
-	public static final double ballTargetHeight = Units.inchesToMeters(81.25);
+	public static final double ballTargetHeight = Units.inchesToMeters(97.5);
 	public static final double collectorTargetHeight = Units.inchesToMeters(11);
 
-	public static final double cameraToBallTargetHeight = Units.inchesToMeters(51.25);
+	public static final double cameraToBallTargetHeight = Units.inchesToMeters(80.25);
 
-	public static final double shooterDistanceFromTargetMeters = 5;
 
-	public static final double shooterRampUpTime = 6;
+	// Target Height
+	public static final double centerofBallShooterHeight = Units.inchesToMeters(21.5);
+	public static final double centerOfBallTargetHeight = Units.inchesToMeters(97.5);
 
-	public static final double pluckerHoldTime = shooterRampUpTime;
+	//public static final double shooterDistanceFromTargetMeters = 5;
 
 }
