@@ -6,9 +6,6 @@
 
 package frc.robot;
 
-import com.revrobotics.ColorMatch;
-
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Units;
 
 /**
@@ -43,7 +40,7 @@ public final class Constants {
 	public static final int rightPoseMoverPort = 1; 
 
 	// Arm motor ports
-	public static final int leftArmPort = 7;
+	public static final int kLiftPort = 7;
 
 	// Shooter motor port
 	public static final int kShooterPort = 5;
@@ -91,12 +88,7 @@ public final class Constants {
 	public static final double intakeVolts = -4;
 	public static final double shooterVolts = 12;
 
-
-	public static final double inConveyorVolts = -12;
-	public static final double outConveyorVolts = 12;
-	
-	public static final double inPluckerVolts = -12;
-	public static final double outPluckerVolts = 12;
+	public static final double conveyorVolts = 12;
 
 	public static final double intakeRPM = -1000;
 	public static final double shooterRPM = 3000;

@@ -10,65 +10,50 @@ package frc.robot.shooter;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import static frc.robot.Constants.*;
 
 public class Conveyor extends SubsystemBase {
-  private ChangePosition goalMover;
-
+  
   private WPI_TalonSRX conveyor = new WPI_TalonSRX(kConveyorPort);
 
-  private boolean engaged = false;
+  private ChangePosition goalMover;
+  private Shooter m_shooter;
 
-  /**
-   * Creates a new Conveyor.
-   */
-  public Conveyor(ChangePosition changePosition) {
+  public Conveyor(ChangePosition changePosition, Shooter shooter) {
     goalMover = changePosition;
+    m_shooter = shooter;
+  }
+
+  public void shoot(double conveyorVolts) {
+    conveyor.setVoltage(conveyorVolts);
+  }
+
+  public void collect(double conveyorVolts) {
+    conveyor.setVoltage(-conveyorVolts);
   }
 
   public void stop() {
-    conveyor.setVoltage(0);
-    engaged = false;
+    setSpeed(0);
+  }
+  public void setSpeed(double conveyorVolts) {
+    if (goalMover.isPosOut()) {
+      collect(conveyorVolts);
+
+    } else {
+      shoot(conveyorVolts);
+    }
   }
 
-  public void collect() {
-    conveyor.setVoltage(inConveyorVolts);
-    engaged = true;
-  }
+  public void toggleSpeed(double conveyorVolts) {
+    if (m_shooter.isEngaged()) {
+      setSpeed(conveyorVolts);
 
-  public void shoot() {
-    conveyor.setVoltage(outConveyorVolts);
-    engaged = true;
+    } else {
+      stop();
+    }
   }
   
-  /**
-   * Sets a voltage based on whether the robot is in low goal shooting position or
-   * intake position. 
-   */
-  public void setSpeed() {
-    if (goalMover.isCollectingPose()) {
-      collect();
-
-    } else {
-      shoot();
-    }
-  }
-
-  /**
-   * Relying on the the shooter state, toggles conveyor on and off 
-   * with the specified voltage
-   * @param beltVolts voltage applied to the conveyor when it is on
-   */
-  public void toggleSpeed() {
-    if (engaged) {
-      stop();
-
-    } else {
-      setSpeed();
-
-    }
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

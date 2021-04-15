@@ -51,10 +51,16 @@ public class Gains {
 	}
 
 	// Feed Forward Constants
-	public static class driveFeedforward {
-		public static final double ks = 0;
-		public static final double kv = 0;
-		public static final double ka = 0;
+	public static class feedForwardDriveRight {
+		public static double kS = 0;
+		public static double kV = 0;
+		public static double kA = 0;
+	}
+
+	public static class feedForwardDriveLeft {
+		public static double kS = 0;
+		public static double kV = 0;
+		public static double kA = 0;
 	}
 
 }

@@ -20,34 +20,37 @@ public class ChangePosition extends SubsystemBase {
   private Solenoid leftPiston = new Solenoid(compressorModule, leftPoseMoverPort);
   private Solenoid rightPiston = new Solenoid(compressorModule, rightPoseMoverPort);
 
-  private boolean collecting = false;
-  public boolean isSwapping = false;
-  
+  private boolean posOut = false;
+
   public ChangePosition() {
     airow.start();
-  }
-
-  public boolean isCollectingPose() {
-    return collecting;
   }
 
   /**
    * Switch from a shooting position to a collecting position and vice versa.
    */ 
-  public void swapHeight(){
-    if (collecting) {
-      shootPose();
+  public void posSwitch() {
+    if (posOut) {
+      leftPiston.set(false);
+      rightPiston.set(false);
+      posOut = false;
+
+      System.out.println("Collecting Pose Set");
+
     } else {
-      collectPose();
-    } 
-    isSwapping = true;
+      leftPiston.set(true);
+      rightPiston.set(true);
+      posOut = true;
+
+      System.out.println("Shooting Pose Set");
+    }
   }
 
   public void collectPose() {
     leftPiston.set(true);
     rightPiston.set(true);
 
-    collecting = true;
+    posOut = true;
     System.out.println("Collecting Pose Set");
   }
 
@@ -55,9 +58,14 @@ public class ChangePosition extends SubsystemBase {
     leftPiston.set(false);
     rightPiston.set(false);
 
-    collecting = false;
+    posOut = false;
     System.out.println("Shooting Pose Set");
   }
+
+  public boolean isPosOut() {
+    return posOut;
+  }
+
 
   @Override
   public void periodic() {

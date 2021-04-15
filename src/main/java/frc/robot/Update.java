@@ -9,13 +9,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.shooter.Plucker;
+import frc.robot.shooter.ChangePosition;
 import frc.robot.shooter.Shooter;
 
-import static frc.robot.Constants.*;
 import static frc.robot.Gains.*;
 
 /**
@@ -23,7 +21,7 @@ import static frc.robot.Gains.*;
  */
 public class Update {
   private Shooter m_shooter;
-  private Plucker m_plucker;
+  private ChangePosition positionChange;
 
   // Starting positions
   private final Pose2d left = new Pose2d(-1, 0, Rotation2d.fromDegrees(0));
@@ -32,9 +30,9 @@ public class Update {
 
   private static final SendableChooser choosePosition = new SendableChooser<Pose2d>();
 
-  public Update(Shooter shooter, Plucker plucker) {
+  public Update(Shooter shooter, ChangePosition changePos) {
     m_shooter = shooter;
-    m_plucker = plucker;
+    positionChange = changePos;
 
     choosePosition.setDefaultOption("Center", center);
     choosePosition.addOption("Left", left);
@@ -49,8 +47,8 @@ public class Update {
     // Display left and right shooter velocities
     SmartDashboard.putNumber("Shooter RPM", m_shooter.getVelocity());
 
-    // Displays whether plucker is engaged
-    SmartDashboard.putBoolean("Plucker Engaged", m_plucker.getEngaged());
+    //display whether the shooter is in shooting position
+    SmartDashboard.putBoolean("Shooter Up", positionChange.isPosOut());
   }
   
   public static Pose2d getStartingPose() {
@@ -61,10 +59,10 @@ public class Update {
   public void periodic() {
     // Update left and right shooter velocities
     SmartDashboard.putNumber("Shooter RPM", m_shooter.getVelocity());
-
-    // Displays whether plucker is engaged
-    SmartDashboard.putBoolean("Plucker Engaged", m_plucker.getEngaged());
     
+    //display whether the shooter is in shooting position
+    SmartDashboard.putBoolean("Shooter Up", positionChange.isPosOut());
+
     // Change PID values for angle correction
     if (angleCorrection.kP != SmartDashboard.getNumber("P value(angle)", angleCorrection.kP))  {
       angleCorrection.kP = SmartDashboard.getNumber("P value(angle)", angleCorrection.kP);

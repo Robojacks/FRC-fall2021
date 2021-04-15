@@ -19,8 +19,6 @@ import frc.robot.vision.Limelight;
 
 import static frc.robot.Gains.shooterPID;
 
-import java.util.function.BooleanSupplier;
-
 import static frc.robot.Constants.*;
 
 public class Shooter extends SubsystemBase {
@@ -73,7 +71,7 @@ public class Shooter extends SubsystemBase {
    * intake position.
    */
   public void setSpeedVolts() {
-    if (goalMover.isCollectingPose()) {
+    if (goalMover.isPosOut()) {
       // if in intake position, intake
       collect();
 
@@ -100,7 +98,7 @@ public class Shooter extends SubsystemBase {
    * intake position.
    */
   public void setSpeedSpark() {
-    if (goalMover.isCollectingPose()) {
+    if (goalMover.isPosOut()) {
       launcherController.setReference(intakeRPM, ControlType.kVelocity);
 
     } else {
@@ -199,7 +197,7 @@ public class Shooter extends SubsystemBase {
    * @param distance the distance in meters from the target
    */
   public void setRelativeSpeedSpark(double distance){
-    if (goalMover.isCollectingPose()) {
+    if (goalMover.isPosOut()) {
       launcherController.setReference(intakeRPM, ControlType.kVelocity);
       engaged = true;
 

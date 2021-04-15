@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.drive.RevDrivetrain;
 
-import static frc.robot.Constants.*;
 import static frc.robot.Gains.*;
 
 public class AimTarget extends CommandBase {
