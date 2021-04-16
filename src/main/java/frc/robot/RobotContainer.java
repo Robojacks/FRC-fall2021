@@ -206,7 +206,7 @@ public SequentialCommandGroup testRobot = new SequentialCommandGroup(
     .whenPressed(new InstantCommand(() -> conveyor.toggleSpeed(conveyorVolts), shooter));
     
     // Shoot or intake with set RPM
-    new JoystickButton(xbox, kY.value)
+    new JoystickButton(xbox, kB.value)
     .whenPressed(new InstantCommand(() -> shooter.toggleSpeedSpark()))
     .whenPressed(new ConditionalCommand(waitUntilVelocity, stopFeeders, shooter::isEngaged));
 
