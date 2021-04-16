@@ -40,4 +40,8 @@ public class Gears extends SubsystemBase {
       fast();
     }
   }
+
+  public boolean isGearsFast() {
+    return isFast;
+  }
 }

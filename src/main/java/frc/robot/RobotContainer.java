@@ -76,7 +76,7 @@ public class RobotContainer {
   private final Controller xboxController = new Controller(xbox);
 
   // Update PID values
-  private final Update update = new Update(shooter, goalMover);
+  private final Update update = new Update(shooter, goalMover, gears);
 
   //  --- Default Commands ---
 
@@ -96,7 +96,7 @@ public class RobotContainer {
   // --- Command Groups ---
 
   private SequentialCommandGroup waitUntilVelocity = new SequentialCommandGroup(
-    new WaitUntilCommand(() -> shooter.atSpeed()),
+    new WaitUntilCommand(() -> shooter.atSpeed()).withInterrupt(goalMover::isPosOut),
     new InstantCommand(() -> conveyor.setSpeed(conveyorVolts), conveyor)
   );
 
@@ -206,7 +206,7 @@ public SequentialCommandGroup testRobot = new SequentialCommandGroup(
     .whenPressed(new InstantCommand(() -> conveyor.toggleSpeed(conveyorVolts), shooter));
     
     // Shoot or intake with set RPM
-    new JoystickButton(xbox, kB.value)
+    new JoystickButton(xbox, kY.value)
     .whenPressed(new InstantCommand(() -> shooter.toggleSpeedSpark()))
     .whenPressed(new ConditionalCommand(waitUntilVelocity, stopFeeders, shooter::isEngaged));
 
