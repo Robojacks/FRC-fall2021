@@ -112,7 +112,7 @@ public class RobotContainer {
     new InstantCommand(() -> conveyor.setSpeed(), conveyor));
 
   private SequentialCommandGroup waitUntilVelocity = new SequentialCommandGroup(
-    new WaitUntilCommand(() -> shooter.atSpeed()),
+    new WaitUntilCommand(() -> shooter.atSpeed()).withInterrupt(goalMover::isCollectingPose),
     //new InstantCommand(() -> plucker.setSpeed(), plucker), 
     new InstantCommand(() -> conveyor.setSpeed(), conveyor)
   );

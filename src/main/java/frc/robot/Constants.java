@@ -40,7 +40,7 @@ public final class Constants {
 
 	// Solenoid ports
 	public static final int leftPoseMoverPort = 0;
-	public static final int rightPoseMoverPort = 1; 
+	public static final int rightPoseMoverPort = 3; 
 
 	// Arm motor ports
 	public static final int leftArmPort = 7;
