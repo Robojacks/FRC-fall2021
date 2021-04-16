@@ -124,10 +124,11 @@ public class RobotContainer {
   // Autonomous 
   private SequentialCommandGroup shootThenGo = new SequentialCommandGroup(
     new InstantCommand(() -> goalMover.collectPose(), goalMover),
-    new WaitCommand(.75),
+    new WaitCommand(2),
     new InstantCommand(() -> goalMover.shootPose(), goalMover),
+    new WaitCommand(2),
     new InstantCommand(() -> shooter.setSpeedSpark(), shooter),
-    new WaitCommand(shooterRampUpTime).withInterrupt(goalMover::isCollectingPose),
+    new WaitUntilCommand(() -> shooter.atSpeed()),
     //new InstantCommand(() -> plucker.setSpeed(), plucker), 
     new InstantCommand(() -> conveyor.setSpeed(), conveyor),
     new WaitCommand(2 + shooterRampUpTime),

@@ -56,7 +56,7 @@ public final class Constants {
 
 	// Solenoid controlling gear ports 
 	public static final int leftGearPort = 2;
-	public static final int rightGearPort = 3;
+	public static final int rightGearPort = 4;
 
 	// Robot Measurements
 	public static final double kTicksPerRev = 4096;
