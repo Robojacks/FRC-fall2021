@@ -112,15 +112,14 @@ public class RobotContainer {
     new WaitCommand(2),
 
     new InstantCommand(() -> goalMover.shootPose(), goalMover),
+
     new WaitCommand(2),
 
     new InstantCommand(() -> shooter.setSpeedSpark(), shooter),
-
-    new WaitCommand(shooterRampUpTime).withInterrupt(goalMover::isPosOut),
-
+    new WaitUntilCommand(() -> shooter.atSpeed()),
     new InstantCommand(() -> conveyor.setSpeed(conveyorVolts), conveyor),
 
-    new WaitCommand(2 + shooterRampUpTime),
+    new WaitCommand(3),
 
     new InstantCommand(() -> conveyor.stop(), conveyor),
     new InstantCommand(() -> shooter.stop(), shooter),
