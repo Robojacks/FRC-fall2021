@@ -111,6 +111,18 @@ public class Shooter extends SubsystemBase {
     engaged = true;
   }
 
+  public void setSpeedSparkAuto() {
+    if (goalMover.isCollectingPose()) {
+      launcherController.setReference(intakeRPM, ControlType.kVelocity);
+
+    } else {
+      launcherController.setReference(shooterAutonomousRPM, ControlType.kVelocity);
+
+    }
+
+    engaged = true;
+  }
+
   public void toggleSpeedSpark() {
     if (engaged) {
       stop();
