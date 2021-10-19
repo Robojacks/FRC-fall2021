@@ -242,6 +242,10 @@ public class Shooter extends SubsystemBase {
     return engaged;
   }
 
+  public boolean isDisabled() {
+    return !engaged;
+  }
+
   /**
    * Gets the shooter velocity in RPM
    */
@@ -251,6 +255,10 @@ public class Shooter extends SubsystemBase {
 
   public boolean atSpeed() {
     return shooterRPM <= getVelocity();
+  }
+  
+  public boolean atAutonomousSpeed() {
+    return shooterAutonomousRPM <= getVelocity();
   }
 
   @Override

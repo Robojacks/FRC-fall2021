@@ -101,8 +101,8 @@ public class RobotContainer {
   // --- Command Groups ---
 
   private SequentialCommandGroup waitUntilVelocity = new SequentialCommandGroup(
-    new WaitUntilCommand(() -> shooter.atSpeed()),
-    new InstantCommand(() -> conveyor.setSpeed(), conveyor)
+    new WaitUntilCommand(() -> shooter.atSpeed()).withInterrupt(goalMover::isCollectingPose),
+    new InstantCommand(() -> conveyor.setSpeed(), conveyor).withInterrupt(shooter::isDisabled)
   );
 
   private SequentialCommandGroup stopFeeders = new SequentialCommandGroup(
@@ -113,15 +113,16 @@ public class RobotContainer {
   // Autonomous 
   private SequentialCommandGroup shootThenGo = new SequentialCommandGroup(
     new InstantCommand(() -> goalMover.collectPose(), goalMover),
-    new WaitCommand(.75),
+    new WaitCommand(2),
     new InstantCommand(() -> goalMover.shootPose(), goalMover),
+    new WaitCommand(2),
     new InstantCommand(() -> shooter.setSpeedSpark(), shooter),
-    new WaitUntilCommand(() -> shooter.atSpeed()),
+    new WaitUntilCommand(() -> shooter.atAutonomousSpeed()),
     new InstantCommand(() -> conveyor.setSpeed(), conveyor),
     new WaitCommand(3),
     new InstantCommand(() -> conveyor.stop(), conveyor),
-    new InstantCommand(() -> shooter.stop(), shooter),
-    new RunCommand(() -> rDrive.getDifferentialDrive().tankDrive(0.4, 0.4), rDrive).withTimeout(2)
+    new InstantCommand(() -> shooter.stop(), shooter)
+    //new RunCommand(() -> rDrive.getDifferentialDrive().tankDrive(0.4, 0.4), rDrive).withTimeout(2)
   );
 
   /*private RamseteCommand rBase = new RamseteCommand(
@@ -184,14 +185,14 @@ public class RobotContainer {
   public void init(){
     limelight.driverMode();
     limelight.lightOff();
-    limelight.PiPSecondaryStream();
+    limelight.PiPMainStream();
 
     shooter.stop();
     conveyor.stop();
   } 
 
   public void teleopPeriodic() {
-    if (Timer.getMatchTime() < 30.0) {
+    if (Timer.getMatchTime() > 28.01 && Timer.getMatchTime() < 30.0) {
       new SequentialCommandGroup(
         new InstantCommand(() -> controller.commenceRumble()),
         new WaitCommand(2),

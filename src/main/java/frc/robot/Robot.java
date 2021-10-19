@@ -33,8 +33,8 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_robotContainer.init();
 
-    //CameraServer.getInstance().startAutomaticCapture("Inside View", 0);
-    //CameraServer.getInstance().startAutomaticCapture("Shooter View", 1);
+    CameraServer.getInstance().startAutomaticCapture("Shooter View", 0);
+    //CameraServer.getInstance().startAutomaticCapture("Inside View", 1);
   }
 
   /**
@@ -91,6 +91,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    m_robotContainer.init();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
