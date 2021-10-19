@@ -240,6 +240,10 @@ public class Shooter extends SubsystemBase {
     return shooterRPM <= getVelocity();
   }
 
+  public boolean atAutonomousSpeed() {
+    return shooterAutonomousRPM <= getVelocity();
+  }
+
   @Override
   public void periodic() {
     /*
