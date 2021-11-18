@@ -115,6 +115,7 @@ public class RobotContainer {
 
   // Autonomous 
   private SequentialCommandGroup shootThenGo = new SequentialCommandGroup(
+    //new RunCommand(() -> goalMover.collectPose(), goalMover).withTimeout(2),
     new InstantCommand(() -> goalMover.collectPose(), goalMover),
     new WaitCommand(2),
     new InstantCommand(() -> goalMover.shootPose(), goalMover),

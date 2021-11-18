@@ -41,6 +41,7 @@ public class RevDrivetrain extends SubsystemBase {
 
   private DifferentialDrive roboDrive = new DifferentialDrive(LFrontWheel, RFrontWheel);
 
+
   //private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   //private double gyroPosition = -gyro.getAngle();
@@ -69,6 +70,10 @@ public class RevDrivetrain extends SubsystemBase {
   private SlewRateLimiter rightLimiter = new SlewRateLimiter(0.3);
 
   public RevDrivetrain() {
+    //This Will remove the Motors not updated enought warning:
+    //roboDrive.setSafetyEnabled(false);
+
+    
     LRearWheel.follow(LFrontWheel);
     RRearWheel.follow(RFrontWheel);
 

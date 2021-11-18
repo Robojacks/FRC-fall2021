@@ -8,6 +8,7 @@
 package frc.robot.shooter;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -44,6 +45,7 @@ public class ChangePosition extends SubsystemBase {
   }
 
   public void collectPose() {
+    DriverStation.reportWarning("Goal Mover Collect", false);
     leftPiston.set(true);
     rightPiston.set(true);
 
@@ -52,6 +54,7 @@ public class ChangePosition extends SubsystemBase {
   }
 
   public void shootPose(){
+    DriverStation.reportWarning("Goal Shoot Pos", false);
     leftPiston.set(false);
     rightPiston.set(false);
 
