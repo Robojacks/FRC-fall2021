@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import static edu.wpi.first.wpilibj.XboxController.Axis.*;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import static frc.robot.Constants.*;
 
@@ -34,9 +33,18 @@ public class RobotContainer {
 
   // Drive with Controller 
   private Command manualDrive = new RunCommand(
-    () -> rDrive.getDifferentialDrive().tankDrive(
-    rDrive)
-  );
+    () -> rDrive.getDifferentialDrive().
+    tankDrive((xbox.getRawAxis(kLeftY.value)), 
+    (xbox.getRawAxis(kLeftX.value))), 
+    (rDrive)
+    );
+
+  public RobotContainer() {
+
+    rDrive.setDefaultCommand(manualDrive);
+
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
