@@ -183,7 +183,6 @@ public class RobotContainer {
     new JoystickButton(xbox, kX.value)
     .whileHeld(new AimTarget(limelight, rDrive));
 
-    //cool
     // Switch Gears
     new JoystickButton(xbox, kBumperRight.value)
     .whenPressed(() -> gears.switchGears(), gears);
